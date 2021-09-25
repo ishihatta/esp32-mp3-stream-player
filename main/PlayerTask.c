@@ -60,11 +60,7 @@ static void play_mp3() {
 
     while (1) {
         // Load MP3 buffer
-        size_t read_len = ring_buffer_read(&sound_buffer, mp3 + mp3_size, sizeof(mp3) - mp3_size);
-        if (read_len == 0) {
-            vTaskDelay(10 / portTICK_PERIOD_MS);
-            continue;
-        }
+        size_t read_len = xStreamBufferReceive(sound_buffer, mp3 + mp3_size, sizeof(mp3) - mp3_size, portMAX_DELAY);
         mp3_size += read_len;
 
         // Decode MP3 to PCM

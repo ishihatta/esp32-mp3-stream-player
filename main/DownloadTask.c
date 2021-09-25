@@ -67,7 +67,7 @@ static void http_perform_as_stream_reader()
         return;
     }
     int content_length =  esp_http_client_fetch_headers(client);
-    int total_read_len = 0, read_len, write_len, write_remain, write_position;
+    int total_read_len = 0, read_len;
     while (total_read_len < content_length) {
         read_len = esp_http_client_read(client, (char*)buffer, MAX_HTTP_RECV_BUFFER);
         if (read_len <= 0) {
@@ -76,15 +76,7 @@ static void http_perform_as_stream_reader()
         }
         total_read_len += read_len;
 
-        write_remain = read_len;
-        write_position = 0;
-        while (true) {
-            write_len = ring_buffer_write(&sound_buffer, buffer + write_position, write_remain);
-            write_position += write_len;
-            write_remain -= write_len;
-            if (write_remain == 0) break;
-            vTaskDelay(10 / portTICK_PERIOD_MS);
-        }
+        xStreamBufferSend(sound_buffer, buffer, read_len, portMAX_DELAY);
     }
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
