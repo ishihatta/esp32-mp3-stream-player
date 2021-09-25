@@ -31,8 +31,7 @@ void app_main(void) {
     ESP_LOGI(TAG, "Wait for connect to WiFi");
     app_wifi_wait_connected();
 
-    //ESP_LOGD(TAG, "Initialize ring buffer");
-    //ring_buffer_init(&sound_buffer, 64 * 1024);
+    ESP_LOGD(TAG, "Initialize stream buffer");
     sound_buffer = xStreamBufferCreate(64 * 1024, 1);
 
     ESP_LOGI(TAG, "Start download task");
